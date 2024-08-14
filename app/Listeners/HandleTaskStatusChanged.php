@@ -27,7 +27,7 @@ class HandleTaskStatusChanged implements ShouldQueue
         // If the task status is 'in_progress', schedule the reminder email to be sent after a delay
         if ($event->task->status === 'in_progress') {
             // Dispatch the SendTaskReminderEmail job with a delay of one minute
-            SendTaskReminderEmail::dispatch($event->task)->delay(now()->addMinute());
+            SendTaskReminderEmail::dispatch($event->task)->delay(now()->addHours(24));
         }
     }
 }
