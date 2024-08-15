@@ -49,9 +49,6 @@ class TaskService
         // Store the original status of the task for comparison
         $originalStatus = $task->status;
 
-        // Initialize an array to track affected tasks (starts with the current task)
-        $affectedTasks = [$task];
-
         // Check if status is changing to 'in_progress' and ensure all subtasks are also in progress
         if (isset($data['status']) && $data['status'] === 'in_progress' && !$task->allSubTasksInProgress()) {
             throw ValidationException::withMessages([
@@ -77,7 +74,7 @@ class TaskService
         $task->update($data);
 
         // If the status is set to 'in_progress', fire the TaskStatusChanged event
-        if ($data['status'] === 'in_progress') {
+        if ($originalStatus !== 'in_progress' && $data['status'] === 'in_progress') {
             event(new TaskStatusChanged($task));
         }
 
